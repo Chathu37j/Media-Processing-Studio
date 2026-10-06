@@ -8,8 +8,12 @@ A browser-based bulk media processing studio for images and videos.
 - Bulk video upload
 - Image resize
 - Video resize using FFmpeg WebAssembly
-- Image enhancement controls
-- AI background removal for images
+- Image enhancement (contrast/saturation, optional 2× smooth upscale)
+- Video enhancement (contrast/sharpen via FFmpeg)
+- AI background removal for images and videos (≤60 s, 10 fps, max 720 px)
+- Output format (JPEG/PNG/WebP) and quality control
+- Per-file download + ZIP export
+- Video 2× Lanczos upscale
 - Transparent / white / black background output
 - ZIP export
 - Responsive dark UI
@@ -39,12 +43,15 @@ This project loads FFmpeg WebAssembly and the image background-removal model fro
 
 Large videos and AI processing can use significant RAM/CPU. Performance depends on the user's device and browser.
 
-The current version provides browser-based image background removal. Full AI video background removal and true AI video enhancement require additional frame-processing models and a video encoding pipeline.
+Video background removal extracts frames at 10 fps (max 720 px, 60 s), removes each background in the browser, then re-encodes with FFmpeg (MP4 for white/black, WebM VP9 alpha for transparent). It is slow and RAM-heavy. Upscaling is Lanczos smoothing, not AI super-resolution.
+
+The JSZip script uses an SRI hash. The unpkg FFmpeg scripts are version-pinned but have no SRI hash yet; generate one with `curl -s URL | openssl dgst -sha384 -binary | openssl base64 -A`.
 
 ## Project Structure
 
 ```text
 media-processing-studio/
+├── .gitignore
 ├── index.html
 └── README.md
 ```
